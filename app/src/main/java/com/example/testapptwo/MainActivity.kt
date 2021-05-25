@@ -9,7 +9,11 @@ import android.content.Intent
 import android.view.ContextMenu
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.doAsync
+import org.springframework.http.ResponseEntity
+import org.springframework.web.client.RestTemplate
 
 const val EXTRA_MESSAGE = "com.example.testapptwo.MESSAGE"
 
@@ -35,6 +39,13 @@ class MainActivity : AppCompatActivity() {
     fun sendMessage(view: View) {
         val editText = findViewById<EditText>(R.id.editTextOne)
         val message = editText.text.toString()
+        val rest = RestTemplate()
+        doAsync{
+            val resp =
+                rest.getForObject("https://translate.google.ru/?sl=en&tl=ar&text=hi&op=translate", String.javaClass)
+            // convert resp to response entity
+            Toast.makeText(applicationContext, resp.toString(), Toast.LENGTH_LONG).show()
+        }
         val intent = Intent(this, DisplayMessageActivity::class.java).apply {
             putExtra(EXTRA_MESSAGE, message)
         }
